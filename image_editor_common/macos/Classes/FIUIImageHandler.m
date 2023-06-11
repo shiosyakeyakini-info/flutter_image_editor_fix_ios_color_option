@@ -315,8 +315,11 @@ FIImage *getImageFromCGContext(CGContextRef context) {
     if (!outputCIImage) {
         return;
     }
-
-    CIContext *ctx = [[CIContext alloc] initWithOptions:@{}];
+    NSDictionary *options = @{
+        kCIContextWorkingColorSpace:[NSNull null],
+        kCIContextOutputColorSpace:[NSNull null]
+    };
+    CIContext *ctx = [CIContext contextWithOptions:options];
     CGImageRef cgImage = [ctx createCGImage:outputCIImage fromRect:[outputCIImage extent]];
 
     FIImage *newImage = [self toFIImage:cgImage width:outImage.size.width height:outImage.size.height];
@@ -338,10 +341,10 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 }
 
 - (CIVector *)getOffsetCIVector:(FIColorOption *)option {
-    CGFloat v1 = [option getValue:4];
-    CGFloat v2 = [option getValue:9];
-    CGFloat v3 = [option getValue:14];
-    CGFloat v4 = [option getValue:19];
+    CGFloat v1 = [option getValue:4] / 255;
+    CGFloat v2 = [option getValue:9] / 255;
+    CGFloat v3 = [option getValue:14] / 255;
+    CGFloat v4 = [option getValue:19] / 255;
     return [CIVector vectorWithX:v1 Y:v2 Z:v3 W:v4];
 }
 
